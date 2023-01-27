@@ -6,12 +6,14 @@ import (
 	_ "github.com/povsister/scp"
 	_ "golang.org/x/crypto/ssh"
 	"golang.org/x/oauth2"
+	"gomodules.xyz/homedir"
 	passgen "gomodules.xyz/password-generator"
 	"gomodules.xyz/pointer"
 	"k8s.io/apimachinery/pkg/util/wait"
 	"k8s.io/klog/v2"
 	"net/http"
 	"os"
+	"path/filepath"
 	"time"
 )
 
@@ -24,6 +26,26 @@ const (
 	linodeMachine string = "g6-standard-2"
 	instanceImage string = "linode/ubuntu22.04"
 )
+
+type CredentialOptions struct {
+	Username   string `json:"username"`
+	Password   string `json:"password"`
+	PrivateKey []byte `json:"privateKey"`
+	CLIToken   string `json:"cliToken"`
+}
+
+func NewCredentialOptions() *CredentialOptions {
+	ret := CredentialOptions{}
+	ret.Username = os.Getenv("USERNAME")
+	ret.Password = os.Getenv("PASSWORD")
+	pk := os.Getenv("SSH_PATH")
+	if pk == "" {
+		pk = filepath.Join(homedir.HomeDir(), ".ssh/id_rsa")
+	}
+	ret.PrivateKey, _ = os.ReadFile(pk)
+
+	return &ret
+}
 
 func NewClient() *linodego.Client {
 	token := os.Getenv("LINODE_CLI_TOKEN")

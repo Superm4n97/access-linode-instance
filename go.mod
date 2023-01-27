@@ -7,6 +7,7 @@ require (
 	github.com/povsister/scp v0.0.0-20210427074412-33febfd9f13e
 	golang.org/x/crypto v0.0.0-20210322153248-0c34fe9e7dc2
 	golang.org/x/oauth2 v0.4.0
+	gomodules.xyz/homedir v0.1.0
 	gomodules.xyz/password-generator v0.2.9
 	gomodules.xyz/pointer v0.1.0
 	k8s.io/apimachinery v0.26.1
