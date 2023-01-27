@@ -3,6 +3,8 @@ package linode
 import (
 	"context"
 	"github.com/linode/linodego"
+	_ "github.com/povsister/scp"
+	_ "golang.org/x/crypto/ssh"
 	"golang.org/x/oauth2"
 	passgen "gomodules.xyz/password-generator"
 	"gomodules.xyz/pointer"
@@ -17,10 +19,10 @@ const (
 	RetryInterval = 10 * time.Second
 	RetryTimeout  = 10 * time.Minute
 
-	instanceName  = "raselTest"
-	linodeRegion  = "us-central"
-	linodeMachine = "g6-standard-2"
-	instanceImage = "linode/ubuntu22.04"
+	instanceName  string = "raselTest"
+	linodeRegion  string = "us-central"
+	linodeMachine string = "g6-standard-2"
+	instanceImage string = "linode/ubuntu22.04"
 )
 
 func NewClient() *linodego.Client {
@@ -94,4 +96,13 @@ func waitForStatus(c *linodego.Client, id int, status linodego.InstanceStatus) e
 		}
 		return false, nil
 	})
+}
+
+func GetInstanceFromID(instanceID int) (*linodego.Instance, error) {
+	client := NewClient()
+	instance, err := client.GetInstance(context.Background(), instanceID)
+	if err != nil {
+		return nil, err
+	}
+	return instance, nil
 }
